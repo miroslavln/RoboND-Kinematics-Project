@@ -121,7 +121,7 @@ beta = acos((A ** 2 + C ** 2 - B ** 2) / (2 * A * C))
 theta2 = pi / 2 - alpha - atan2(wz - 0.75, r)
 theta3 = pi / 2 - beta + 0.036
 ```
-After we have the first 3 angles then we can calculate the rest using matrix inversion. 
+After we have the first 3 angles then we can calculate the rest using them. 
 ```python
 R0_3 = T0_1[0:3, 0:3] * T1_2[0:3, 0:3] * T2_3[0:3, 0:3]
 R0_3 = R0_3.evalf(subs={q1: theta1, q2: theta2, q3: theta3})
@@ -135,11 +135,10 @@ theta6 = atan2(-R3_6[1, 1], R3_6[1, 0])
 
 #### 1. Fill in the `IK_server.py` file with properly commented python code for calculating Inverse Kinematics based on previously performed Kinematic Analysis. Your code must guide the robot to successfully complete 8/10 pick and place cycles. Briefly discuss the code you implemented and your results. 
 
-The implementation is using the sympy library. I initially used the inverse of the R0_3 to calculate the inverse kinematics 
+The implementation is using the sympy library. The code follows the steps outlined above. I initially used the inverse of the R0_3 to calculate the inverse kinematics 
 but that was very slow so I changed to use the transpose instead which improved performance significantly. I also had problems with the gripper 
 which was not waiting enough time to grab the object but after an adjustment to the trajectory_sampler.cpp it started working. 
-While I was implemnting the project and trying out different calculations I hit problems with the angles leading to collisions 
-which was causing the gazibo to get stuck and unable to execute the trajectory so I had to restart it every time. 
+ 
 
 
 
