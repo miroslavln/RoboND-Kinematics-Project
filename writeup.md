@@ -18,8 +18,8 @@
 [//]: # (Image References)
 
 [image1]: ./misc_images/dh_drawing.jpg
-[image2]: ./misc_images/misc3.png
-[image3]: ./misc_images/misc2.png
+[image2]: ./misc_images/misc2.png
+[image3]: ./misc_images/misc3.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -104,7 +104,7 @@ WC = Matrix([px, py, pz]) - d7 * Rrpy * Matrix([1,0,0])
 ```
 Here the px,py, pz are the desired position of the gripper, d7 is the distance to joint 5 which is designated as the wrist center. 
 
-![alt text][image3]
+![alt text][image2]
 Using the above triangle we can solve for theta2, and theta3 by using the cosine law. 
 ```python
 theta1 = atan2(wy, wx)
