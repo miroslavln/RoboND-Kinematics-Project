@@ -104,7 +104,7 @@ WC = Matrix([px, py, pz]) - d7 * Rrpy * Matrix([1,0,0])
 ```
 Here the px,py, pz are the desired position of the gripper, d7 is the distance to joint 5 which is designated as the wrist center. 
 
-![alt text][image2]
+![alt text][image3]
 Using the above triangle we can solve for theta2, and theta3 by using the cosine law. 
 ```python
 theta1 = atan2(wy, wx)
