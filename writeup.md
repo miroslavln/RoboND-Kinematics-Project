@@ -17,7 +17,7 @@
 
 [//]: # (Image References)
 
-[image1]: ./misc_images/dh_drawing.jpg
+[image1]: ./misc_images/drawing.jpg
 [image2]: ./misc_images/graphic.jpg
 [image3]: ./misc_images/formula1.jpg
 [image4]: ./misc_images/urdf_parameters.jpg
