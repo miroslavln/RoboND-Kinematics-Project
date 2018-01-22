@@ -25,6 +25,7 @@
 [image6]: ./misc_images/inverse_kinematics1.png
 [image7]: ./misc_images/formula2.jpg
 [image8]: ./misc_images/gazeebo.png
+[image9]: ./misc_images/matrices.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -90,6 +91,8 @@ T6_G = create_transformation_matrix(alpha6, a6, d7, q7).subs(DH)
 
 ```
 The transformation from base link to gripper is done by multiplying all the transition tables. 
+
+![alt text][image9]
 ```python
 T0_G = T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G
 ```
