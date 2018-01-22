@@ -19,7 +19,7 @@
 
 [image1]: ./misc_images/dh_drawing.jpg
 [image2]: ./misc_images/graphic.jpg
-[image3]: ./misc_images/formulas1.jpg
+[image3]: ./misc_images/formula1.jpg
 [image4]: ./misc_images/urdf_parameters.jpg
 [image5]: ./misc_images/dh-transform-matrix.png
 [image6]: ./misc_images/inverse_kinematics1.png
