@@ -52,7 +52,7 @@ def handle_calculate_IK(req):
         T5_6 = create_transformation_matrix(alpha5, a5, d6, q6).subs(DH)
         T6_G = create_transformation_matrix(alpha6, a6, d7, q7).subs(DH)
 
-        T0_G = T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G
+        T0_G = simplify(T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G)
         # Extract rotation matrices from the transformation matrices
         r, p, y = symbols('r p y')
 
@@ -100,15 +100,15 @@ def handle_calculate_IK(req):
 
             r = sqrt(wx ** 2 + wy ** 2) - 0.35
 
-            A = 1.501
+            A = 1.501 #sqrt(a3**2 + d4**2)
             B = sqrt(r ** 2 + (wz - 0.75) ** 2)
-            C = 1.25
+            C = 1.25 #a2
 
             alpha = acos((B ** 2 + C ** 2 - A ** 2) / (2 * B * C))
             beta = acos((A ** 2 + C ** 2 - B ** 2) / (2 * A * C))
 
             theta2 = pi / 2 - alpha - atan2(wz - 0.75, r)
-            theta3 = pi / 2 - beta + 0.036
+            theta3 = pi / 2 - beta + 0.036 # 0.036 to account for the slack of -0.054
 
             R0_3 = T0_1[0:3, 0:3] * T1_2[0:3, 0:3] * T2_3[0:3, 0:3]
             R0_3 = R0_3.evalf(subs={q1: theta1, q2: theta2, q3: theta3})

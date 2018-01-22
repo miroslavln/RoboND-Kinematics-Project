@@ -18,8 +18,13 @@
 [//]: # (Image References)
 
 [image1]: ./misc_images/dh_drawing.jpg
-[image2]: ./misc_images/misc3.png
-[image3]: ./misc_images/misc2.png
+[image2]: ./misc_images/graphic.jpg
+[image3]: ./misc_images/formulas1.jpg
+[image4]: ./misc_images/urdf_parameters.jpg
+[image5]: ./misc_images/dh-transform-matrix.png
+[image6]: ./misc_images/inverse_kinematics1.png
+[image7]: ./misc_images/formula2.jpg
+[image8]: ./misc_images/gazeebo.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -34,9 +39,23 @@ You're reading it!
 ### Kinematic Analysis
 #### 1. Run the forward_kinematics demo and evaluate the kr210.urdf.xacro file to perform kinematic analysis of Kuka KR210 robot and derive its DH parameters.
 
-Following the project videos the following drawing was used to determine the DH parameters in conjunction with the parameters from the URDF file
-
+First we need to separate the robot into links and joins. Here is what it looks like.
 ![alt text][image1]
+
+Now we need to find the lengths of the individual joints. We will use the kr210.urfd.xacro file to get the values. Here is an example of the information provided.  
+```xml
+<joint name="joint_1" type="revolute">
+    <origin xyz="0 0 0.33" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="link_1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="${-185*deg}" upper="${185*deg}" effort="300" velocity="${123*deg}"/>
+</joint>
+```
+The resulting table is as shown on the following image. 
+
+![alt text][image4]
+
 
 This is the resulting DH table
 
@@ -44,14 +63,16 @@ Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 --- | --- | --- | --- | ---
 0->1 | 0 | 0 | 0.75 | q1
 1->2 | - pi/2 | 0.35 | 0 | -pi/2 + q2
-2->3 | 0 | 1.25 | 0 | 0
-3->4 |  -pi/2 | -0.054 | 1.5 | 0
-4->5 | pi/2 | 0 | 0 | 0
-5->6 | -pi/2 | 0 | 0 | 0
+2->3 | 0 | 1.25 | 0 | q3
+3->4 |  -pi/2 | -0.054 | 1.5 | q4
+4->5 | pi/2 | 0 | 0 | q5
+5->6 | -pi/2 | 0 | 0 | q6
 6->EE | 0 | 0 | 0.303 | 0
 
-#### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
+For an example the di for transformation 0->1 is calculated summing the z value for joint_1 and joint_2 (0.33 + 0.42) resulting in d1 of 0.75
 
+#### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
+![alt text][image5]
 ```python
 def create_transformation_matrix(alpha, a, d, q):
     return Matrix([[              cos(q),            -sin(q),              0,                a],
@@ -103,23 +124,29 @@ To solve the inverse kinematics problem we use a wrist center to simplify the pr
 WC = Matrix([px, py, pz]) - d7 * Rrpy * Matrix([1,0,0])
 ```
 Here the px,py, pz are the desired position of the gripper, d7 is the distance to joint 5 which is designated as the wrist center. 
-
-![alt text][image3]
-Using the above triangle we can solve for theta2, and theta3 by using the cosine law. 
+theta1 is easily calculated from the top view projection
+![alt text][image6]
 ```python
 theta1 = atan2(wy, wx)
-
+```
+![alt text][image2]
+From the graphic above we get the following formulas
+![alt text][image3]
+and finally we can derive theta2 and theta3
+![alt text][image7]
+Using the above triangle we can solve for theta2, and theta3 by using the cosine law. 
+```python
 r = sqrt(wx ** 2 + wy ** 2) - 0.35
 
-A = 1.501
+A = 1.501 #sqrt(a3**2 + d4**2)
 B = sqrt(r ** 2 + (wz - 0.75) ** 2)
-C = 1.25
+C = 1.25 #a2
 
 alpha = acos((B ** 2 + C ** 2 - A ** 2) / (2 * B * C))
 beta = acos((A ** 2 + C ** 2 - B ** 2) / (2 * A * C))
 
 theta2 = pi / 2 - alpha - atan2(wz - 0.75, r)
-theta3 = pi / 2 - beta + 0.036
+theta3 = pi / 2 - beta + 0.036 
 ```
 After we have the first 3 angles then we can calculate the rest using matrix inversion. 
 ```python
@@ -138,8 +165,8 @@ theta6 = atan2(-R3_6[1, 1], R3_6[1, 0])
 The implementation is using the sympy library. I initially used the inverse of the R0_3 to calculate the inverse kinematics 
 but that was very slow so I changed to use the transpose instead which improved performance significantly. I also had problems with the gripper 
 which was not waiting enough time to grab the object but after an adjustment to the trajectory_sampler.cpp it started working. 
-While I was implemnting the project and trying out different calculations I hit problems with the angles leading to collisions 
-which was causing the gazibo to get stuck and unable to execute the trajectory so I had to restart it every time. 
+Here is an image after a few executions.
+![alt text][image8]
 
 
 
