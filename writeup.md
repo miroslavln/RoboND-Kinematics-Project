@@ -165,7 +165,7 @@ R0_3 = T0_1[0:3, 0:3] * T1_2[0:3, 0:3] * T2_3[0:3, 0:3]
 R0_3 = R0_3.evalf(subs={q1: theta1, q2: theta2, q3: theta3})
 R3_6 = R0_3.T * Rrpy
 ```
-![alt text][image7]
+![alt text][image10]
 ```python
 theta5 = atan2(sqrt(r13**2 + r33**2), r23)
 if sin(theta5 ) < 0:
